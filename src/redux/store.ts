@@ -6,10 +6,12 @@ import { setupListeners } from '@reduxjs/toolkit/query'
 import { baseApi } from './services/baseApi'
 
 import alertReducer from './reducers/alertReducer'
+import homeReducer from './reducers/homeReducer'
 
 const store = configureStore({
   reducer: {
     alert: alertReducer,
+    home: homeReducer,
     [baseApi.reducerPath]: baseApi.reducer,
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat([
