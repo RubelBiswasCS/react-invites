@@ -1,22 +1,23 @@
 import './home.scss'
-import { Button } from 'antd'
-import InviteUserModal from '../../components/Home/InviteUserModal'
+import { Row, Col } from 'antd'
+import TopSection from '../../components/Home/TopSection'
 
-// Import Hooks and Reducers
-import { useAppDispatch } from '../../redux/store'
-import { setIsInviteUserModalOpen } from '../../redux/reducers/homeReducer'
-
+// Import Hooks
+import { useAppSelector } from '../../redux/store'
 const Home = () => {
-  const dispatch = useAppDispatch()
-
-  const _onOpenInviteUserModal = () => {
-    dispatch(setIsInviteUserModalOpen(true))
-  }
-
+  const selectedTab: string = useAppSelector((state) => state?.home?.selectedTab ?? 'Users')
+  
   return (
     <div className='home'>
-      <Button ghost type='primary' onClick={ _onOpenInviteUserModal }>Invite a User</Button>
-      { true ? <InviteUserModal /> : '' }
+      <Row gutter={[0, 16]} style={{ flex: 1 }}>
+        <Col span={ 24 }>
+          <TopSection />
+        </Col>
+        <Col span={ 24 }>
+          { selectedTab === 'Users' ? 'Users' : '' }
+          { selectedTab === 'InvitedUsers' ? 'InvitedUsers' : '' }
+        </Col>
+      </Row>
     </div>
   )
 }

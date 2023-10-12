@@ -1,7 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
-    isInviteUserModalOpen: false
+    isInviteUserModalOpen: false,
+    selectedTab: 'Users'
 }
 
 const homeSlice = createSlice({
@@ -10,9 +11,12 @@ const homeSlice = createSlice({
   reducers: {
     setIsInviteUserModalOpen: (state, action) => {
       state.isInviteUserModalOpen = action.payload
+    },
+    setSelectedTab: (state, action) => {
+      state.selectedTab = action.payload
     }
   }
 })
 
-export const { setIsInviteUserModalOpen } = homeSlice.actions
+export const { setIsInviteUserModalOpen, setSelectedTab } = homeSlice.actions
 export default homeSlice.reducer
