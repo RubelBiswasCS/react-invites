@@ -41,30 +41,38 @@ export const homeApi = baseApi
     }),
       getOnboardedUsers: builder.query<any, any>({
         query: (options: any) => ({
-          url: `${ API.ONBOARDED_USERS }`,
+          url: `${ API.ACCOUNTS }/${ options?.uuid }/users`,
           method: 'GET',
           params: options?.params ?? {}
         }),
         transformResponse: (response: any, meta, arg) => {
-            console.log({ response })
-          if (!response || !response?.subscription) {
+          if (!response) {
             return []
           }
-          return response?.data ?? []
+          return response?.map((r: any, idx: any) => ({
+            ...r,
+            key: idx,
+            fullname: `${r?.firstName ?? ''} ${ r?.lastName ?? '' }` 
+          }))
         },
         providesTags: ['OnboardedUsers']
       }),
       getInvitedUsers: builder.query<any, any>({
         query: (options: any) => ({
-          url: `${ API.INVITED_USERS }`,
+          url: `${ API.ACCOUNTS }/${ options?.uuid }/pending-invites`,
           method: 'GET',
           params: options?.params ?? {}
         }),
         transformResponse: (response: any, meta, arg) => {
-          if (!response || !response?.data) {
+          if (!response) {
             return []
           }
-          return response?.data ?? []
+          return response?.map((r: any, idx: any) => ({
+            ...r,
+            key: idx,
+            invitedByUserName: r?.invitedBy?.username ?? '',
+            invitedByName: `${r?.invitedBy?.firstName ?? ''} ${ r?.invitedBy?.lastName ?? '' }`  
+          }))
         },
         providesTags: ['InvitedUsers']
       })

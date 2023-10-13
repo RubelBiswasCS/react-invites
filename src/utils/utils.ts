@@ -6,3 +6,10 @@ export function getAuthToken() {
     }
     return null
 }
+
+export function getAccountUUID (accounts: any) {
+    if (accounts && accounts?.length > 0) {
+        return accounts[0]?.uuid ?? null
+    }
+    return null
+}

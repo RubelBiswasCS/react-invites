@@ -1,3 +1,5 @@
+import { useMemo } from 'react'
+
 // Import Components
 import { Form, Button, Row, Col, Input, Select } from 'antd'
 import StyledModal from '../common/StyledModal'
@@ -7,7 +9,7 @@ import { useAppDispatch, useAppSelector } from '../../redux/store'
 import { useGetAccountsQuery, useGetRolesQuery, useInviteUserMutation } from '../../redux/services/homeApi'
 import { setIsInviteUserModalOpen } from '../../redux/reducers/homeReducer'
 import { setAlertState } from '../../redux/reducers/alertReducer'
-import { useMemo } from 'react'
+import { getAccountUUID } from '../../utils/utils'
 
 // Constants
 const { Item } = Form
@@ -20,13 +22,7 @@ const InviteUserModal = () => {
     const isInviteUserModalOpen: boolean = useAppSelector((state) => state?.home?.isInviteUserModalOpen ?? false)
 
     const { data: accounts = [] } = useGetAccountsQuery({})
-    const uuid = useMemo(() => {
-        if (accounts && accounts?.length > 0) {
-            return accounts[0]?.uuid ?? null
-        }
-        return null
-    }, [accounts])
-
+    const uuid = useMemo(() => getAccountUUID(accounts), [accounts])
     const { data: roles = [], isLoading: isRolesLoading = false } = useGetRolesQuery({ uuid }, { skip: !uuid })
     const [inviteUser] = useInviteUserMutation()
 

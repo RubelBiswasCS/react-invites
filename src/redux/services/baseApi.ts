@@ -15,7 +15,7 @@ export const axiosBaseQuery = ({ baseUrl }: { baseUrl: string } = { baseUrl: '' 
       return { data: result?.data }
     } catch (axiosError: any) {
       const err: any = axiosError as AxiosError
-      if (err.response?.status === 401) {
+      if ([401, 403].includes(err.response?.status)) {
         window.location.href = '/login'
         localStorage.clear()
       }

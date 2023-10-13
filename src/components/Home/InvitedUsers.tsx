@@ -1,44 +1,48 @@
+import { useMemo } from 'react'
 import StyledTable from "../common/StyledTable"
+
+import { useGetAccountsQuery, useGetInvitedUsersQuery } from "../../redux/services/homeApi";
+import { getAccountUUID } from '../../utils/utils';
 const InvitedUsers = () => {
 
-  const dataSource = [
-    {
-      key: '1',
-      name: 'Jeff',
-      age: 32,
-      address: '10 Downing Street',
-    },
-    {
-      key: '2',
-      name: 'Ron',
-      age: 42,
-      address: '10 Downing Street',
-    },
-  ];
-
+  const { data: accounts = [] } = useGetAccountsQuery({})
+  const uuid = useMemo(() => getAccountUUID(accounts), [accounts])
+  const { data: invitedUsers = [], isLoading = false } = useGetInvitedUsersQuery({ uuid }, { skip: !uuid })
+  
   const columns = [
     {
-      title: 'Name',
-      dataIndex: 'name',
-      key: 'name',
+      title: 'ID',
+      dataIndex: 'id',
+      key: 'id',
     },
     {
-      title: 'Age',
-      dataIndex: 'age',
-      key: 'age',
+      title: 'Email',
+      dataIndex: 'emailInvitedTo',
+      key: 'emailInvitedTo',
     },
     {
-      title: 'Address',
-      dataIndex: 'address',
-      key: 'address',
+      title: 'Invited By',
+      dataIndex: 'invitedByName',
+      key: 'invitedByName',
+    },
+    {
+      title: 'Invited By(Username)',
+      dataIndex: 'invitedByUserName',
+      key: 'invitedByUserName',
+    },
+    {
+      title: 'Invited On',
+      dataIndex: 'invitedOn',
+      key: 'invitedOn',
     }
   ];
 
   return (
     <div>
       <StyledTable 
-        rows={dataSource} 
+        rows={invitedUsers} 
         columns={columns}
+        loading={ isLoading }
       />
     </div>
   )

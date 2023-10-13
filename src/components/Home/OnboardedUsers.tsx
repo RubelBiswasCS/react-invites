@@ -1,44 +1,50 @@
+import { useMemo } from 'react'
 import StyledTable from "../common/StyledTable"
+
+import { useGetAccountsQuery, useGetOnboardedUsersQuery } from "../../redux/services/homeApi";
+import { getAccountUUID } from '../../utils/utils';
 const OnboardedUsers = () => {
 
-  const dataSource = [
-    {
-      key: '1',
-      name: 'Mike',
-      age: 32,
-      address: '10 Downing Street',
-    },
-    {
-      key: '2',
-      name: 'John',
-      age: 42,
-      address: '10 Downing Street',
-    },
-  ];
+  const { data: accounts = [] } = useGetAccountsQuery({})
+  const uuid = useMemo(() => getAccountUUID(accounts), [accounts])
+  const { data: users = [], isLoading = false } = useGetOnboardedUsersQuery({ uuid }, { skip: !uuid })
 
   const columns = [
     {
+      title: 'ID',
+      dataIndex: 'id',
+      key: 'id',
+    },
+    {
       title: 'Name',
-      dataIndex: 'name',
-      key: 'name',
+      dataIndex: 'fullname',
+      key: 'fullname',
     },
     {
-      title: 'Age',
-      dataIndex: 'age',
-      key: 'age',
+      title: 'Email',
+      dataIndex: 'email',
+      key: 'email',
     },
     {
-      title: 'Address',
-      dataIndex: 'address',
-      key: 'address',
+      title: 'Username',
+      dataIndex: 'username',
+      key: 'username',
+    },
+    {
+      title: 'Is Active',
+      dataIndex: 'isActive',
+      key: 'isActive',
+      align: 'center',
+      render: (value: any) => value ? 'Yes' : 'No'
     }
   ];
 
   return (
     <div>
       <StyledTable 
-        rows={dataSource} 
+        rows={users} 
         columns={columns}
+        loading={ isLoading }
       />
     </div>
   )
