@@ -1,6 +1,9 @@
-import { useTransition } from 'react'
+import { useTransition, lazy, Suspense } from 'react'
+import { useNavigate } from 'react-router-dom'
+
+// Import Components
 import { Button, Row, Col } from 'antd'
-import InviteUserModal from '../../components/Home/InviteUserModal'
+import StyledLoader from '../common/StyledLoader'
 
 // Import Hooks and Reducers
 import { useAppDispatch, useAppSelector } from '../../redux/store'
@@ -11,8 +14,12 @@ import { Tabs } from 'antd'
 
 import './index.scss'
 
+const InviteUserModal = lazy(() => import('../../components/Home/InviteUserModal'))
+ 
+
 const TopSection = () => {
   const dispatch = useAppDispatch()
+  const navigate = useNavigate()
 
   const [isPending, startTransition] = useTransition();
 
@@ -31,11 +38,26 @@ const TopSection = () => {
     dispatch(setSelectedTab(key))
   }
 
+  // On Logout
+  const _onLogout = () => {
+    localStorage.clear()
+    navigate('/login')
+  }
+
   return (
     <div className='top-section'>
+      { isInviteUserModalOpen ? (
+        <Suspense fallback={ <StyledLoader isModal /> }>
+          <InviteUserModal />
+        </Suspense>
+      )
+      : '' }
       <Row gutter={[0, 0]} style={{ flex: 1 }}>
         <Col span={24} className='flex-end'>
-          <Button ghost type='primary' onClick={ _onOpenInviteUserModal }>Invite a User</Button>
+          <div className='top-actions'>
+            <Button ghost type='primary' onClick={ _onOpenInviteUserModal }>Invite a User</Button>
+            <Button ghost danger type='primary' onClick={ _onLogout }>Logout</Button>
+          </div>
         </Col>
         <Col span={24}>
           <Tabs
@@ -56,7 +78,6 @@ const TopSection = () => {
           />
         </Col>
       </Row>     
-      { isInviteUserModalOpen ? <InviteUserModal /> : '' }
     </div>
   )
 }

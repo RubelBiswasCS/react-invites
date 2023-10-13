@@ -21,6 +21,7 @@ const InviteUserModal = () => {
     // Redux States
     const isInviteUserModalOpen: boolean = useAppSelector((state) => state?.home?.isInviteUserModalOpen ?? false)
 
+    // Queris
     const { data: accounts = [] } = useGetAccountsQuery({})
     const uuid = useMemo(() => getAccountUUID(accounts), [accounts])
     const { data: roles = [], isLoading: isRolesLoading = false } = useGetRolesQuery({ uuid }, { skip: !uuid })
