@@ -54,7 +54,8 @@ const containerStyle = {
     top: 4,
     padding: 6,
     display: 'flex',
-    gap: 8
+    gap: 8,
+    zIndex: 1000
 }
 
 const errorStyle = {

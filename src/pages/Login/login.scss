@@ -1,0 +1,22 @@
+
+
+@mixin flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login {
+    @include flex-center;
+    width: 100%;
+    min-height: 100vh;
+    background-color: aliceblue;
+    .login-form-container {
+        @include flex-center;
+        flex-direction: column;
+        padding: 32px 32px;
+        box-shadow: 0px 10px 15px -3px rgba(0,0,0,0.1);
+        border-radius: 8px;
+        background-color: white;
+    }
+}
