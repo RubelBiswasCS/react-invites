@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
-    alertState: null
+  alertState: null
 }
 
 const alertSlice = createSlice({
