@@ -1,10 +1,13 @@
 // Import Components
-import { Form, Button, Row, Col, Input } from 'antd'
+import { Form, Button, Row, Col, Input, Select } from 'antd'
 import StyledModal from '../common/StyledModal'
 
 // Import Actions and Methods
 import { useAppDispatch, useAppSelector } from '../../redux/store'
+import { useGetAccountsQuery, useGetRolesQuery, useInviteUserMutation } from '../../redux/services/homeApi'
 import { setIsInviteUserModalOpen } from '../../redux/reducers/homeReducer'
+import { setAlertState } from '../../redux/reducers/alertReducer'
+import { useMemo } from 'react'
 
 // Constants
 const { Item } = Form
@@ -16,6 +19,16 @@ const InviteUserModal = () => {
     // Redux States
     const isInviteUserModalOpen: boolean = useAppSelector((state) => state?.home?.isInviteUserModalOpen ?? false)
 
+    const { data: accounts = [] } = useGetAccountsQuery({})
+    const uuid = useMemo(() => {
+        if (accounts && accounts?.length > 0) {
+            return accounts[0]?.uuid ?? null
+        }
+        return null
+    }, [accounts])
+
+    const { data: roles = [], isLoading: isRolesLoading = false } = useGetRolesQuery({ uuid }, { skip: !uuid })
+    const [inviteUser] = useInviteUserMutation()
 
     // On Cancel
     const _onCancel = () => {
@@ -24,13 +37,14 @@ const InviteUserModal = () => {
     }
 
     // On Form Submit
-    const _onSubmit = (data: any) => {
-        const key = 'invite-user'
-        const values = {
-            ...data
+    const _onSubmit = async (data: any) => {
+        try {
+            await inviteUser({ data, uuid }).unwrap()
+            dispatch(setAlertState({ type: 'success', title: 'Invitaiton Sent Successfull' }))
+            _onCancel()
+        } catch (e: any) {
+            dispatch(setAlertState({ type: 'error', title: 'Failed to sent Invitation', description: e?.data?.message ?? '' }))
         }
-
-        console.log({ data })
     }
 
     // On Form Submit Error
@@ -59,13 +73,32 @@ const InviteUserModal = () => {
                             <Col span={ 24 }>
                                 <Item
                                     label="Email"
-                                    name="email"
+                                    name="emailInvitedTo"
                                     rules={ [
                                         { required: true, message: 'This field is Required!' },
                                         { type: 'email', message: 'The input is not valid E-mail!' }
                                     ] }
                                 >
                                     <Input placeholder="Email" />
+                                </Item>
+                            </Col>
+                            <Col span={ 24 }>
+                                <Item
+                                    label={ "Role" }
+                                    name="rolesInvitedTo"
+                                    rules={ [
+                                        { required: true, message: 'This field is Required!' }
+                                    ] }
+                                >
+                                    <Select
+                                        mode="multiple"
+                                        loading={ isRolesLoading }
+                                        placeholder="Select"
+                                        onChange={ () => null }
+                                        options={ [ ...roles] }
+                                        showSearch
+                                        filterOption={ (input: any, option: any) => option?.label?.toLowerCase()?.includes(input?.trim()?.toLowerCase()) }
+                                    />
                                 </Item>
                             </Col>
                             <Col span={ 24 }>
