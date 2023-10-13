@@ -1,6 +1,8 @@
 import './home.scss'
 import { Row, Col } from 'antd'
 import TopSection from '../../components/Home/TopSection'
+import OnboardedUsers from '../../components/Home/OnboardedUsers'
+import InvitedUsers from '../../components/Home/InvitedUsers'
 
 // Import Hooks
 import { useAppSelector } from '../../redux/store'
@@ -9,13 +11,13 @@ const Home = () => {
   
   return (
     <div className='home'>
-      <Row gutter={[0, 16]} style={{ flex: 1 }}>
+      <Row gutter={[0, 16]}>
         <Col span={ 24 }>
           <TopSection />
         </Col>
         <Col span={ 24 }>
-          { selectedTab === 'Users' ? 'Users' : '' }
-          { selectedTab === 'InvitedUsers' ? 'InvitedUsers' : '' }
+          { selectedTab === 'Users' ? <OnboardedUsers /> : '' }
+          { selectedTab === 'InvitedUsers' ? <InvitedUsers /> : '' }
         </Col>
       </Row>
     </div>

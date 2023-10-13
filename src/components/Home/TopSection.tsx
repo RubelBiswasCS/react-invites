@@ -1,4 +1,5 @@
-import { Button } from 'antd'
+import { useTransition } from 'react'
+import { Button, Row, Col } from 'antd'
 import InviteUserModal from '../../components/Home/InviteUserModal'
 
 // Import Hooks and Reducers
@@ -6,36 +7,56 @@ import { useAppDispatch, useAppSelector } from '../../redux/store'
 import { setIsInviteUserModalOpen, setSelectedTab } from '../../redux/reducers/homeReducer'
 
 // Import Components
-import { Radio, Space } from 'antd'
-
-// Import Types
-import type { RadioChangeEvent } from 'antd'
+import { Tabs } from 'antd'
 
 import './index.scss'
 
 const TopSection = () => {
   const dispatch = useAppDispatch()
 
+  const [isPending, startTransition] = useTransition();
+
+  // Redux States
   const selectedTab: string = useAppSelector((state) => state?.home?.selectedTab ?? 'Users')
+  const isInviteUserModalOpen: boolean = useAppSelector((state) => state?.home?.isInviteUserModalOpen ?? false)
 
   const _onOpenInviteUserModal = () => {
-    dispatch(setIsInviteUserModalOpen(true))
+    startTransition(() => {
+      dispatch(setIsInviteUserModalOpen(true))
+    });
   }
 
   // On Tab Change
-  const _onTabChange = (e: RadioChangeEvent) => {
-    dispatch(setSelectedTab(e.target.value))
+  const _onTabChange = (key: string) => {
+    dispatch(setSelectedTab(key))
   }
+
   return (
     <div className='top-section'>
-      <Space style={{ marginBottom: 24 }}>
-        <Radio.Group style={{ display: 'flex', gap: 8 }} value={ selectedTab } onChange={ _onTabChange }>
-          <Radio.Button value="Users">Users</Radio.Button>
-          <Radio.Button value="InvitedUsers">Invited Users</Radio.Button>
-        </Radio.Group>
-      </Space>
-      <Button ghost type='primary' onClick={ _onOpenInviteUserModal }>Invite a User</Button>
-      { true ? <InviteUserModal /> : '' }
+      <Row gutter={[0, 0]} style={{ flex: 1 }}>
+        <Col span={24} className='flex-end'>
+          <Button ghost type='primary' onClick={ _onOpenInviteUserModal }>Invite a User</Button>
+        </Col>
+        <Col span={24}>
+          <Tabs
+            onChange={ _onTabChange }
+            type="card"
+            activeKey={ selectedTab }
+            animated
+            items={[
+              {
+                label: 'Onboarded Users',
+                key: 'Users'
+              },
+              {
+                label: 'Invited Users',
+                key: 'InvitedUsers'
+              }
+            ]}
+          />
+        </Col>
+      </Row>     
+      { isInviteUserModalOpen ? <InviteUserModal /> : '' }
     </div>
   )
 }
