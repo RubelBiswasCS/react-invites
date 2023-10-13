@@ -3,16 +3,16 @@ import { Form, Button, Row, Col, Input } from 'antd'
 
 // Import Actions and Hooks
 import { useLoginMutation } from '../../redux/services/authApi'
-import { useAppDispatch } from '../../redux/store'
 import { useNavigate } from 'react-router-dom'
-import { setAlertState } from '../../redux/reducers/alertReducer'
+import useAlert from '../../hooks/useAlert'
 
 // Constants
 const { Item } = Form
 
 const LoginForm = () => {
-    const dispatch = useAppDispatch()
     const navigate = useNavigate()
+    const { alert } = useAlert()
+
     const [form] = Form.useForm()
 
     const [login] = useLoginMutation()
@@ -26,10 +26,10 @@ const LoginForm = () => {
     const _onSubmit = async (data: any) => {
         try {
             await login(data).unwrap()
-            dispatch(setAlertState({ type: 'success', title: 'Sucessfully Logged In' }))
+            alert({ type: 'success', title: 'Sucessfully Logged In' })
             navigate('/')
         } catch {
-            dispatch(setAlertState({ type: 'error', title: 'Failed to Login', discription: 'Login failed, Try Again' }))
+            alert({ type: 'error', title: 'Failed to Login', description: 'Login failed, Try Again' })
         }
     }
 

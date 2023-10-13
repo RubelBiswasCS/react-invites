@@ -7,8 +7,9 @@ import StyledModal from '../common/StyledModal'
 // Import Actions and Methods
 import { useAppDispatch, useAppSelector } from '../../redux/store'
 import { homeApi, useGetAccountsQuery, useGetRolesQuery, useInviteUserMutation } from '../../redux/services/homeApi'
+import useAlert from '../../hooks/useAlert'
+
 import { setIsInviteUserModalOpen } from '../../redux/reducers/homeReducer'
-import { setAlertState } from '../../redux/reducers/alertReducer'
 import { getAccountUUID } from '../../utils/utils'
 
 // Constants
@@ -16,6 +17,7 @@ const { Item } = Form
 
 const InviteUserModal = () => {
     const dispatch = useAppDispatch()
+    const { alert } = useAlert()
     const [form] = Form.useForm()
 
     // Redux States
@@ -37,11 +39,11 @@ const InviteUserModal = () => {
     const _onSubmit = async (data: any) => {
         try {
             await inviteUser({ data, uuid }).unwrap()
-            dispatch(setAlertState({ type: 'success', title: 'Invitaiton Sent Successfull' }))
+            alert({ type: 'success', title: 'Invitaiton Sent Successfull' })
             dispatch(homeApi.util.invalidateTags(['InvitedUsers']))
             _onCancel()
         } catch (e: any) {
-            dispatch(setAlertState({ type: 'error', title: 'Failed to sent Invitation', description: e?.data?.message ?? '' }))
+            alert({ type: 'error', title: 'Failed to sent Invitation', description: e?.data?.message ?? '' })
         }
     }
 

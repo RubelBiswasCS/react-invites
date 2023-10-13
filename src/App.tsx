@@ -1,12 +1,13 @@
 import './App.css';
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+
+// Import Components
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Alert from './components/common/Alert';
 
-import { useAppSelector, useAppDispatch } from './redux/store';
-import { setAlertState } from './redux/reducers/alertReducer';
+import useAlert from './hooks/useAlert';
 
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 const router = createBrowserRouter([
   {
@@ -20,8 +21,8 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  const dispatch = useAppDispatch()
-  const alertState: any = useAppSelector((state) => state?.alert?.alertState ?? null)
+  const { alert, alertState } = useAlert()
+
   return (<>
     { alertState ? (
       <Alert
@@ -29,7 +30,7 @@ function App() {
         type={ alertState?.type }
         title={ alertState?.title }
         description={ alertState?.description }
-        onClose={ () => dispatch(setAlertState(null)) }
+        onClose={ () => alert(null) }
       />
     ) : '' }
     <RouterProvider router={router} />
